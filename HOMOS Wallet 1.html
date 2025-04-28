@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ar" dir="rtl"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>HOMOS Wallet</title> 
+  <link rel="stylesheet" href="style.css"> 
+ <style type="text/css" id="dcoder_stylesheet">body {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+}
+
+input, button {
+    margin: 10px;
+    padding: 10px;
+    width: 80%;
+    max-width: 300px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+}
+
+input {
+    background-color: #333;
+    color: #fff;
+}
+
+button {
+    background-color: #28a745;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.actions {
+    margin: 20px 0;
+}</style></head> 
+ <body> 
+  <div id="login-container"> 
+   <h2>HOMOS Wallet </h2> 
+   <input type="email" id="email" placeholder="البريد الإلكتروني"> 
+   <input type="password" id="password" placeholder="كلمة المرور"> <button onclick="login()">تسجيل الدخول</button> <button onclick="forgotPassword()">نسيت كلمة المرور؟</button> 
+  </div> 
+  <div id="wallet-container" style="display: none;"> 
+   <h2>مرحبا بيك في محفظة HOMOS</h2> 
+   <p id="user-balance">رصيدك: 0 جنيه</p> 
+   <div class="actions"> <button onclick="showDeposit()">إيداع</button> <button onclick="showWithdraw()">سحب</button> <button onclick="showTransfer()">تحويل</button> <button onclick="showAdmin()" id="admin-btn" style="display: none;">منطقة المدير</button> 
+   </div> 
+   <div class="contact-us"> <button onclick="showContactOptions()">تواصل معانا</button> 
+   </div> 
+   <div id="action-content"></div> 
+  </div> 
+  <script src="hff.js"></script> 
+  <script src="script.js"></script> 
+ 
+</body></html>
