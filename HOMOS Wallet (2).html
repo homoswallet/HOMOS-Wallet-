@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="ar"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>HOMOS Wallet </title> 
+  <link rel="stylesheet" href="style.css"> 
+ <style type="text/css" id="dcoder_stylesheet">/* الأساسيات */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #000000; /* خلفية سوداء */
+  color: #ffffff; /* نص أبيض */
+  padding: 20px;
+}
+
+/* رأس الصفحة */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #006400; /* أخضر غامق */
+  padding: 10px 20px;
+  color: white;
+  border-radius: 10px;
+}
+
+h1 {
+  margin: 0;
+}
+
+/* المدخلات والأزرار */
+input, button {
+  margin: 10px 0;
+  padding: 12px;
+  width: 100%;
+  max-width: 350px;
+  display: block;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+input {
+  background-color: #1c1c1c; /* خلفية إدخال رمادي غامق */
+  color: white;
+  border: 1px solid #2e8b57; /* أخضر فاتح */
+}
+
+/* الأزرار */
+button {
+  background-color: #2e8b57; /* أخضر */
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #3cb371; /* أخضر أفتح عند المرور */
+}
+
+/* النصوص الهامة */
+h2, h3 {
+  color: #00ff00; /* أخضر فوسفوري */
+}
+
+/* الروابط */
+a {
+  color: #00ff00; /* أخضر للروابط */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* أقسام العمليات */
+#operations-buttons button {
+  margin: 10px 5px;
+  display: inline-block;
+  width: auto;
+  padding: 10px 20px;
+}
+
+#users-list {
+  margin-top: 20px;
+}
+
+#users-list button {
+  margin-top: 5px;
+}
+
+/* اخفاء أو إظهار الأقسام */
+#deposit-section, 
+#withdraw-section, 
+#transfer-section, 
+#support-section {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #121212; /* رمادي داكن */
+  border-radius: 10px;
+}</style></head> 
+ <body style="background-color: black; color: white;"> 
+  <header> 
+   <h1>HOMOS Wallet </h1> <button onclick="logout()">تسجيل الخروج</button> 
+  </header> 
+  <main> <!-- تسجيل الدخول --> 
+   <div id="auth-section"> 
+    <h2>تسجيل الدخول</h2> 
+    <input type="email" id="email" placeholder="البريد الإلكتروني"> 
+    <input type="password" id="password" placeholder="كلمة المرور"> <button onclick="login()">دخول</button> 
+    <p id="error-message"></p> 
+   </div> <!-- المحفظة --> 
+   <div id="wallet-section" style="display: none;"> 
+    <h2>أهلا بيك، <span id="user-email"></span></h2> 
+    <p>رصيدك الحالي: <span id="balance">0</span> جنيه</p> <!-- أزرار العمليات --> 
+    <div id="operations-buttons"> <button onclick="showSection('deposit-section')">إيداع رصيد</button> <button onclick="showSection('withdraw-section')">سحب رصيد</button> <button onclick="showSection('transfer-section')">تحويل رصيد</button> <button onclick="showSection('support-section')">الدعم الفني / حل المشكلات</button> 
+    </div> <!-- قسم الإيداع --> 
+    <div id="deposit-section" style="display: none;"> 
+     <h3>إيداع رصيد</h3> 
+     <p>حول على الرقم: <span id="deposit-phone">01014879247</span> <button onclick="copyPhone()">نسخ الرقم</button> </p> 
+     <input type="number" id="deposit-amount" placeholder="اكتب المبلغ اللي حولته"> 
+     <input type="text" id="sender-phone" placeholder="اكتب رقم الموبايل اللي حولت منه"> 
+     <input type="file" id="deposit-proof" accept="image/*"> <button onclick="confirmDeposit()">تأكيد الإيداع</button> 
+    </div> <!-- قسم السحب --> 
+    <div id="withdraw-section" style="display: none;"> 
+     <h3>سحب رصيد</h3> 
+     <input type="text" id="withdraw-phone" placeholder="رقم الموبايل اللي هتسحب عليه"> 
+     <input type="number" id="withdraw-amount" placeholder="المبلغ اللي عايز تسحبه"> <button onclick="confirmWithdraw()">تأكيد السحب</button> 
+    </div> <!-- قسم التحويل --> 
+    <div id="transfer-section" style="display: none;"> 
+     <h3>تحويل رصيد</h3> 
+     <input type="email" id="transfer-email" placeholder="البريد الإلكتروني للمستلم"> 
+     <input type="number" id="transfer-amount" placeholder="المبلغ اللي عايز تحوله"> <button onclick="confirmTransfer()">تأكيد التحويل</button> 
+    </div> <!-- قسم الدعم الفني --> 
+    <div id="support-section" style="display: none;"> 
+     <h3>الدعم الفني / حل المشكلات</h3> 
+     <p>البريد الإلكتروني: <a href="mailto:homoswallet@gmail.com" style="color: lightgreen;">homoswallet@gmail.com</a> </p> 
+     <p>واتساب: <a href="https://wa.me/201012265953" target="_blank" style="color: lightgreen;">+201012265953</a> </p> 
+     <p>رقم أرضي: <a href="tel:+20402403621" style="color: lightgreen;">+20402403621</a> </p> 
+     <p>رقم موبايل: <a href="tel:+201014879247" style="color: lightgreen;">+201014879247</a> </p> 
+    </div> <!-- قسم المدير --> 
+    <div id="admin-section" style="display: none;"> 
+     <h3>لوحة تحكم المدير</h3> 
+     <input type="email" id="target-email" placeholder="بريد المستخدم"> 
+     <input type="number" id="add-amount" placeholder="المبلغ اللي هتزوده"> <button onclick="addBalance()">زود الرصيد</button> 
+     <h3>كل المستخدمين:</h3> 
+     <div id="users-list"></div> 
+    </div> 
+   </div> 
+  </main> <!-- تحميل مكتبات فايربيز --> 
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script> <!-- سكريبت التطبيق --> 
+  <script src="app.js"></script> 
+ 
+<script type="text/javascript" id="dcoder_script">// تهيئة Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCWyQfMmzp41jTYV4GXFViV2wMMTIiP8XU",
+  authDomain: "wallet-52a17.firebaseapp.com",
+  projectId: "wallet-52a17",
+  storageBucket: "wallet-52a17.appspot.com",
+  messagingSenderId: "440517088889",
+  appId: "1:440517088889:web:a862ab37106851c66066a8",
+  measurementId: "G-28Z0S2BGEV"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// --- عرض أو إخفاء الأقسام حسب الضغط المتكرر ---
+let currentVisibleSection = null;
+
+function showSection(sectionId) {
+  if (currentVisibleSection === sectionId) {
+    document.getElementById(sectionId).style.display = "none";
+    currentVisibleSection = null;
+  } else {
+    ["deposit-section", "withdraw-section", "transfer-section", "support-section"].forEach(id => {
+      document.getElementById(id).style.display = "none";
+    });
+    document.getElementById(sectionId).style.display = "block";
+    currentVisibleSection = sectionId;
+  }
+}
+
+// --- تسجيل الدخول أو إنشاء حساب تلقائي مع فحص الأخطاء ---
+function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email.includes("@") || password.length < 6) {
+    alert("اكتب بريد إلكتروني صحيح وكلمة مرور أكتر من 6 حروف.");
+    return;
+  }
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      afterLogin(email);
+    })
+    .catch((error) => {
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-login-credentials') {
+        auth.createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            alert("انت عملت/ي حساب جديد فاتك كتير بس عادي 👏");
+            afterLogin(email);
+          })
+          .catch((signupError) => {
+            document.getElementById("error-message").innerText = "خطأ في إنشاء الحساب: " + signupError.message;
+          });
+      } else {
+        document.getElementById("error-message").innerText = "خطأ: " + error.message;
+      }
+    });
+}
+
+// --- تنفيذ بعد تسجيل الدخول أو إنشاء الحساب ---
+function afterLogin(email) {
+  document.getElementById("auth-section").style.display = "none";
+  document.getElementById("wallet-section").style.display = "block";
+  document.getElementById("user-email").innerText = email;
+
+  if (email === "ahmedfouad01278837444@gmail.com") {
+    document.getElementById("admin-section").style.display = "block";
+    loadUsers();
+  }
+
+  const userDoc = db.collection("wallets").doc(email);
+  userDoc.get().then(doc => {
+    if (!doc.exists) {
+      userDoc.set({ balance: 0, history: [] });
+    } else {
+      document.getElementById("balance").innerText = doc.data().balance.toFixed(2);
+    }
+  });
+}
+
+// --- التحقق من الجلسة عند فتح الصفحة ---
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    afterLogin(user.email);
+  } else {
+    document.getElementById("auth-section").style.display = "block";
+    document.getElementById("wallet-section").style.display = "none";
+  }
+});
+
+// --- تسجيل الخروج ---
+function logout() {
+  auth.signOut().then(() => {
+    location.reload();
+  });
+}
+
+// --- نسخ رقم الهاتف ---
+function copyPhone() {
+  navigator.clipboard.writeText("01014879247");
+  alert("تم نسخ الرقم!");
+}
+
+// --- تأكيد الإيداع وإرسال على الواتساب ---
+function confirmDeposit() {
+  const amount = parseFloat(document.getElementById("deposit-amount").value);
+  const senderPhone = document.getElementById("sender-phone").value.trim();
+  const userEmail = auth.currentUser.email;
+
+  if (!amount || !senderPhone) {
+    alert("محتاج تكتب كل البيانات!");
+    return;
+  }
+
+  if (confirm("هل أنت متأكد من صحة البيانات؟ هيتم إرسالها للواتساب للمراجعة.")) {
+    let message = `عملية إيداع جديدة\nالبريد: ${userEmail}\nمبلغ التحويل: ${amount} جنيه\nرقم الموبايل اللي حولت منه: ${senderPhone}`;
+    let whatsappURL = `https://wa.me/201016553764?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, '_blank');
+    alert("تم إرسال بياناتك، سيتم مراجعتها واضافة الرصيد قريباً.");
+  }
+}
+
+// --- تأكيد السحب وإرسال على الواتساب ---
+function confirmWithdraw() {
+  const withdrawPhone = document.getElementById("withdraw-phone").value.trim();
+  const amount = parseFloat(document.getElementById("withdraw-amount").value);
+  const userEmail = auth.currentUser.email;
+
+  if (!withdrawPhone || !amount) {
+    alert("محتاج تكتب كل البيانات!");
+    return;
+  }
+
+  if (amount < 5) {
+    alert("أقل مبلغ للسحب هو 5 جنيه!");
+    return;
+  }
+
+  const commission = Math.max(amount * 0.015, 3);
+  const finalAmount = amount - commission;
+
+  if (confirm(`هيتم خصم ${commission.toFixed(2)} جنيه من المبلغ. متأكد تكمل؟`)) {
+    const userDoc = db.collection("wallets").doc(userEmail);
+
+    userDoc.get().then(doc => {
+      if (doc.exists && doc.data().balance >= amount) {
+        userDoc.update({
+          balance: firebase.firestore.FieldValue.increment(-amount),
+          history: firebase.firestore.FieldValue.arrayUnion({
+            type: 'سحب',
+            amount: amount,
+            date: new Date().toISOString()
+          })
+        }).then(() => {
+          let message = `طلب سحب جديد\nالبريد: ${userEmail}\nمبلغ السحب: ${amount} جنيه\nرقم السحب: ${withdrawPhone}\nالمبلغ بعد الخصم: ${finalAmount.toFixed(2)} جنيه`;
+          let whatsappURL = `https://wa.me/201016553764?text=${encodeURIComponent(message)}`;
+          window.open(whatsappURL, '_blank');
+          alert("تم تسجيل طلب السحب، جاري مراجعته.");
+          location.reload();
+        });
+      } else {
+        alert("معكشي فلوس!");
+      }
+    });
+  }
+}
+
+// --- تأكيد التحويل بين المستخدمين مع خصم 1 جنيه ---
+function confirmTransfer() {
+  const recipientEmail = document.getElementById("transfer-email").value.trim();
+  const amount = parseFloat(document.getElementById("transfer-amount").value);
+  const senderEmail = auth.currentUser.email;
+
+  if (!recipientEmail || !amount) {
+    alert("محتاج تكتب البريد والمبلغ!");
+    return;
+  }
+
+  const totalDeduct = amount + 1;
+
+  const senderDoc = db.collection("wallets").doc(senderEmail);
+  const recipientDoc = db.collection("wallets").doc(recipientEmail);
+
+  senderDoc.get().then(senderSnapshot => {
+    if (senderSnapshot.exists && senderSnapshot.data().balance >= totalDeduct) {
+      recipientDoc.get().then(recipientSnapshot => {
+        if (recipientSnapshot.exists) {
+          recipientDoc.update({
+            balance: firebase.firestore.FieldValue.increment(amount),
+            history: firebase.firestore.FieldValue.arrayUnion({
+              type: 'استلام تحويل',
+              amount: amount,
+              from: senderEmail,
+              date: new Date().toISOString()
+            })
+          });
+        } else {
+          recipientDoc.set({
+            balance: amount,
+            history: [{
+              type: 'استلام تحويل',
+              amount: amount,
+              from: senderEmail,
+              date: new Date().toISOString()
+            }]
+          });
+        }
+
+        senderDoc.update({
+          balance: firebase.firestore.FieldValue.increment(-totalDeduct),
+          history: firebase.firestore.FieldValue.arrayUnion({
+            type: 'تحويل',
+            amount: amount,
+            to: recipientEmail,
+            date: new Date().toISOString()
+          })
+        }).then(() => {
+          alert("المبلغ وصل!");
+          location.reload();
+        });
+
+      });
+    } else {
+      alert("رصيدك مش كفاية!");
+    }
+  });
+}
+
+// --- إضافة رصيد للمستخدم من المدير ---
+function addBalance() {
+  const email = document.getElementById("target-email").value.trim();
+  const amount = parseFloat(document.getElementById("add-amount").value);
+
+  if (!email || !amount) {
+    alert("محتاج تكتب البريد والمبلغ!");
+    return;
+  }
+
+  const userDoc = db.collection("wallets").doc(email);
+
+  userDoc.get().then(doc => {
+    if (doc.exists) {
+      userDoc.update({
+        balance: firebase.firestore.FieldValue.increment(amount),
+        history: firebase.firestore.FieldValue.arrayUnion({
+          type: 'اضافة مدير',
+          amount: amount,
+          date: new Date().toISOString()
+        })
+      }).then(() => {
+        alert("تم إضافة الرصيد للمستخدم!");
+      });
+    } else {
+      userDoc.set({
+        balance: amount,
+        history: [{
+          type: 'اضافة مدير',
+          amount: amount,
+          date: new Date().toISOString()
+        }]
+      }).then(() => {
+        alert("تم إنشاء الحساب واضافة الرصيد!");
+      });
+    }
+  });
+}
+
+// --- تحميل كل المستخدمين (للإدارة) ---
+function loadUsers() {
+  const usersList = document.getElementById("users-list");
+  usersList.innerHTML = "";
+
+  db.collection("wallets").get().then(snapshot => {
+    snapshot.forEach(doc => {
+      const user = doc.id;
+      const button = document.createElement("button");
+      button.innerText = `شوف العمليات لـ ${user}`;
+      button.onclick = () => showUserHistory(user);
+      usersList.appendChild(button);
+    });
+  });
+}
+
+// --- عرض سجل العمليات لمستخدم معين ---
+function showUserHistory(userEmail) {
+  db.collection("wallets").doc(userEmail).get().then(doc => {
+    if (doc.exists) {
+      const history = doc.data().history || [];
+      let output = `سجل العمليات لـ ${userEmail}:\n\n`;
+      history.forEach(record => {
+        output += `${record.date} - ${record.type} - مبلغ: ${record.amount} جنيه\n`;
+        if (record.to) output += `--> إلى: ${record.to}\n`;
+        if (record.from) output += `--> من: ${record.from}\n`;
+      });
+      alert(output);
+    }
+  });
+}</script></body></html>
