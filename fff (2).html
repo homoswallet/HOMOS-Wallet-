@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="ar"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>HOMOS Wallet</title> 
+  <link rel="stylesheet" href="style.css"> 
+ <style type="text/css" id="dcoder_stylesheet">body {
+  font-family: 'Cairo', sans-serif;
+  background-color: black;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1c1c1c;
+  padding: 10px 20px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  width: 40px;
+  height: 40px;
+}
+
+input, select, button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 300px;
+}
+
+button {
+  background-color: #00cc00;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #009900;
+}
+
+.operation-section {
+  margin-top: 20px;
+  border-top: 1px solid #333;
+  padding-top: 10px;
+}
+
+#footer-marquee {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #1c1c1c;
+  color: #00ff00;
+  padding: 10px;
+  font-size: 14px;
+  z-index: 999;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.link-about {
+  color: lightblue;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 20px;
+}</style></head> 
+ <body style="background-color: black; color: white;"> 
+  <header> 
+   <div class="logo-container"> 
+    <img src="icons/logo.png" alt="HOMOS Logo" class="logo-img"> 
+    <h1>HOMOS Wallet</h1> 
+   </div> <button onclick="logout()">تسجيل الخروج</button> 
+  </header> 
+  <main> <!-- تسجيل الدخول --> 
+   <div id="auth-section"> 
+    <h2>تسجيل الدخول</h2> 
+    <input type="email" id="email" placeholder="البريد الإلكتروني"> 
+    <input type="password" id="password" placeholder="كلمة المرور"> <button onclick="login()">دخول / تسجيل</button> 
+    <p><a href="#" onclick="forgotPassword()">نسيت كلمة المرور؟</a></p> 
+    <p id="error-message"></p> 
+    <p class="link-about" onclick="toggleAbout()">من نحن / كيفية الاستخدام؟</p> 
+    <div id="about-section" style="display: none;"> 
+     <h3>من نحن</h3> 
+     <p>نحن محفظة رقمية تقدم خدمات تحويل وسحب وشحن باقات فكة.</p> 
+     <h3>كيفية الاستخدام</h3> 
+     <p>سجّل، اختر الخدمة، وأرسل البيانات، وسيتم تأكيد العملية عبر واتساب.</p> 
+    </div> 
+   </div> <!-- بعد تسجيل الدخول --> 
+   <div id="wallet-section" style="display: none;"> 
+    <h2>أهلاً <span id="user-email"></span></h2> 
+    <p>رصيدك الحالي: <span id="balance">0</span> جنيه <button id="toggle-balance" onclick="toggleBalance()">إخفاء</button> </p> 
+    <p id="last-operation" style="font-size: 0.9em; color: gray;"></p> <!-- أزرار العمليات --> 
+    <div class="button-grid"> <button onclick="showSection('deposit-section')">💰 إيداع</button> <button onclick="showSection('withdraw-section')">💸 سحب</button> <button onclick="showSection('transfer-section')">🔁 تحويل</button> <button onclick="showSection('support-section')">📞 الدعم</button> <button onclick="showUserHistory()">📋 العمليات</button> <button onclick="showSection('fakka-section')">📱 فكة</button> 
+    </div> <!-- قسم الإيداع --> 
+    <div id="deposit-section" class="operation-section" style="display: none;"> 
+     <h3>إيداع رصيد</h3> 
+     <p>ارسل على الرقم: <span id="deposit-phone">01014879247</span> <button onclick="copyPhone()">نسخ</button></p> 
+     <input type="number" id="deposit-amount" placeholder="المبلغ المحوّل"> 
+     <input type="text" id="sender-phone" placeholder="رقم المرسل"> 
+     <input type="file" id="deposit-proof" accept="image/*"> <button onclick="confirmDeposit()">تأكيد الإيداع</button> 
+    </div> <!-- قسم السحب --> 
+    <div id="withdraw-section" class="operation-section" style="display: none;"> 
+     <h3>سحب رصيد</h3> 
+     <input type="text" id="withdraw-phone" placeholder="رقم السحب"> 
+     <input type="number" id="withdraw-amount" placeholder="المبلغ"> <button onclick="confirmWithdraw()">تأكيد السحب</button> 
+    </div> <!-- قسم التحويل --> 
+    <div id="transfer-section" class="operation-section" style="display: none;"> 
+     <h3>تحويل رصيد</h3> 
+     <input type="email" id="transfer-email" placeholder="البريد المستلم"> 
+     <input type="number" id="transfer-amount" placeholder="المبلغ"> <button onclick="confirmTransfer()">تأكيد التحويل</button> 
+    </div> <!-- قسم الدعم --> 
+    <div id="support-section" class="operation-section" style="display: none;"> 
+     <h3>الدعم الفني</h3> 
+     <p><a href="mailto:homoswallet@gmail.com">homoswallet@gmail.com</a></p> 
+     <p><a href="https://wa.me/201012265953" target="_blank">واتساب: +201012265953</a></p> 
+     <p><a href="tel:+20402403621">أرضي: +20402403621</a></p> 
+     <p><a href="tel:+201014879247">موبايل: +201014879247</a></p> 
+    </div> <!-- قسم فكة --> 
+    <div id="fakka-section" class="operation-section" style="display: none;"> 
+     <h3>شحن باقات الفكة</h3> <select id="fakka-package"> <option value="13">باقة فكة 13 جنيه</option> <option value="16.5">باقة فكة 16.5 جنيه</option> <option value="19.5">باقة فكة 19.5 جنيه</option> <option value="26">باقة فكة 26 جنيه</option> </select> 
+     <input type="text" id="fakka-number" placeholder="رقم الشحن"> <button onclick="confirmFakka()">تأكيد الشحن</button> 
+    </div> 
+   </div> 
+  </main> 
+  <div id="footer-marquee"> <marquee behavior="scroll" direction="right">
+     نعمل على تطوير HOMOS Wallet لتقديم كل خدمات الشحن والتحويل والسحب — شكرًا لثقتكم! 
+   </marquee> 
+  </div> 
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script> 
+  <script src="app.js"></script> 
+ 
+<script type="text/javascript" id="dcoder_script">// تهيئة Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCWyQfMmzp41jTYV4GXFViV2wMMTIiP8XU",
+  authDomain: "wallet-52a17.firebaseapp.com",
+  projectId: "wallet-52a17",
+  storageBucket: "wallet-52a17.appspot.com",
+  messagingSenderId: "440517088889",
+  appId: "1:440517088889:web:a862ab37106851c66066a8",
+  measurementId: "G-28Z0S2BGEV"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let currentVisibleSection = null;
+function showSection(sectionId) {
+  if (currentVisibleSection === sectionId) {
+    document.getElementById(sectionId).style.display = "none";
+    currentVisibleSection = null;
+  } else {
+    ["deposit-section", "withdraw-section", "transfer-section", "support-section"].forEach(id => {
+      document.getElementById(id).style.display = "none";
+    });
+    document.getElementById(sectionId).style.display = "block";
+    currentVisibleSection = sectionId;
+  }
+}
+
+let balanceVisible = true;
+function toggleBalance() {
+  const balanceEl = document.getElementById("balance");
+  const toggleBtn = document.getElementById("toggle-balance");
+  if (balanceVisible) {
+    balanceEl.innerText = "•••••";
+    toggleBtn.innerText = "إظهار";
+  } else {
+    const userEmail = auth.currentUser.email;
+    db.collection("wallets").doc(userEmail).get().then(doc => {
+      if (doc.exists) {
+        balanceEl.innerText = doc.data().balance.toFixed(2);
+      }
+    });
+    toggleBtn.innerText = "إخفاء";
+  }
+  balanceVisible = !balanceVisible;
+}
+
+function forgotPassword() {
+  const email = document.getElementById("email").value.trim();
+  if (!email) {
+    alert("اكتب البريد الأول عشان نقدر نبعته لك!");
+    return;
+  }
+  auth.sendPasswordResetEmail(email)
+    .then(() => alert("بعتنالك رسالة على الإيميل، راجعها وغيّر الباسورد."))
+    .catch(err => alert("حصل خطأ: " + err.message));
+}
+
+function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email.includes("@") || password.length < 6) {
+    alert("اكتب بريد إلكتروني صحيح وكلمة مرور أكتر من 6 حروف.");
+    return;
+  }
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => afterLogin(email))
+    .catch((error) => {
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-login-credentials') {
+        auth.createUserWithEmailAndPassword(email, password)
+          .then(() => {
+            alert("تم إنشاء حساب جديد! جاري تسجيل الدخول...");
+            afterLogin(email);
+          })
+          .catch((signupError) => {
+            document.getElementById("error-message").innerText = "خطأ في إنشاء الحساب: " + signupError.message;
+          });
+      } else {
+        document.getElementById("error-message").innerText = "خطأ: " + error.message;
+      }
+    });
+}
+
+function afterLogin(email) {
+  document.getElementById("auth-section").style.display = "none";
+  document.getElementById("wallet-section").style.display = "block";
+  document.getElementById("user-email").innerText = email;
+
+  if (email === "ahmedfouad01278837444@gmail.com") {
+    document.getElementById("admin-section").style.display = "block";
+    loadUsers();
+  }
+
+  const userDoc = db.collection("wallets").doc(email);
+  userDoc.get().then(doc => {
+    if (!doc.exists) {
+      userDoc.set({ balance: 0, history: [] });
+    } else {
+      const data = doc.data();
+      document.getElementById("balance").innerText = data.balance.toFixed(2);
+
+      const history = data.history;
+      if (history && history.length > 0) {
+        const last = history[history.length - 1];
+        document.getElementById("last-operation").innerText =
+          `آخر عملية: ${last.type} بقيمة ${last.amount} جنيه بتاريخ ${last.date.slice(0, 10)}`;
+      }
+    }
+  });
+}
+
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    afterLogin(user.email);
+  } else {
+    document.getElementById("auth-section").style.display = "block";
+    document.getElementById("wallet-section").style.display = "none";
+  }
+});
+
+function logout() {
+  auth.signOut().then(() => {
+    location.reload();
+  });
+}
+
+function copyPhone() {
+  navigator.clipboard.writeText("01014879247");
+  alert("تم نسخ الرقم!");
+}
+
+function confirmDeposit() {
+  const amount = parseFloat(document.getElementById("deposit-amount").value);
+  const senderPhone = document.getElementById("sender-phone").value.trim();
+  const userEmail = auth.currentUser.email;
+
+  if (!amount || !senderPhone) {
+    alert("محتاج تكتب كل البيانات!");
+    return;
+  }
+
+  if (confirm("هل أنت متأكد من صحة البيانات؟ هيتم إرسالها للواتساب للمراجعة.")) {
+    let message = `عملية إيداع جديدة\nالبريد: ${userEmail}\nمبلغ التحويل: ${amount} جنيه\nرقم الموبايل اللي حولت منه: ${senderPhone}`;
+    let whatsappURL = `https://wa.me/201016553764?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, '_blank');
+    alert("تم إرسال بياناتك، سيتم مراجعتها واضافة الرصيد قريباً.");
+  }
+}
+
+function confirmWithdraw() {
+  const withdrawPhone = document.getElementById("withdraw-phone").value.trim();
+  const amount = parseFloat(document.getElementById("withdraw-amount").value);
+  const userEmail = auth.currentUser.email;
+
+  if (!withdrawPhone || !amount) {
+    alert("محتاج تكتب كل البيانات!");
+    return;
+  }
+
+  if (amount < 5) {
+    alert("أقل مبلغ للسحب هو 5 جنيه!");
+    return;
+  }
+
+  const commission = Math.max(amount * 0.015, 3);
+  const finalAmount = amount - commission;
+
+  const userDoc = db.collection("wallets").doc(userEmail);
+  userDoc.get().then(doc => {
+    if (doc.exists && doc.data().balance >= amount) {
+      userDoc.update({
+        balance: firebase.firestore.FieldValue.increment(-amount),
+        history: firebase.firestore.FieldValue.arrayUnion({
+          type: 'سحب',
+          amount: amount,
+          date: new Date().toISOString()
+        })
+      }).then(() => {
+        let message = `طلب سحب جديد\nالبريد: ${userEmail}\nمبلغ السحب: ${amount} جنيه\nرقم السحب: ${withdrawPhone}\nالمبلغ بعد الخصم: ${finalAmount.toFixed(2)} جنيه`;
+        let whatsappURL = `https://wa.me/201016553764?text=${encodeURIComponent(message)}`;
+        window.location.href = whatsappURL;
+      });
+    } else {
+      alert("معكشي فلوس!");
+    }
+  });
+}
+
+function confirmTransfer() {
+  const recipientEmail = document.getElementById("transfer-email").value.trim();
+  const amount = parseFloat(document.getElementById("transfer-amount").value);
+  const senderEmail = auth.currentUser.email;
+
+  if (!recipientEmail || !amount) {
+    alert("محتاج تكتب البريد والمبلغ!");
+    return;
+  }
+
+  const totalDeduct = amount + 1;
+  const senderDoc = db.collection("wallets").doc(senderEmail);
+  const recipientDoc = db.collection("wallets").doc(recipientEmail);
+
+  senderDoc.get().then(senderSnapshot => {
+    if (senderSnapshot.exists && senderSnapshot.data().balance >= totalDeduct) {
+      recipientDoc.get().then(recipientSnapshot => {
+        if (recipientSnapshot.exists) {
+          recipientDoc.update({
+            balance: firebase.firestore.FieldValue.increment(amount),
+            history: firebase.firestore.FieldValue.arrayUnion({
+              type: 'استلام تحويل',
+              amount: amount,
+              from: senderEmail,
+              date: new Date().toISOString()
+            })
+          });
+        } else {
+          recipientDoc.set({
+            balance: amount,
+            history: [{
+              type: 'استلام تحويل',
+              amount: amount,
+              from: senderEmail,
+              date: new Date().toISOString()
+            }]
+          });
+        }
+
+        senderDoc.update({
+          balance: firebase.firestore.FieldValue.increment(-totalDeduct),
+          history: firebase.firestore.FieldValue.arrayUnion({
+            type: 'تحويل',
+            amount: amount,
+            to: recipientEmail,
+            date: new Date().toISOString()
+          })
+        }).then(() => {
+          alert("تم التحويل بنجاح!");
+          location.reload();
+        });
+      });
+    } else {
+      alert("رصيدك مش كفاية!");
+    }
+  });
+}
+
+function addBalance() {
+  const email = document.getElementById("target-email").value.trim();
+  const amount = parseFloat(document.getElementById("add-amount").value);
+
+  if (!email || !amount) {
+    alert("محتاج تكتب البريد والمبلغ!");
+    return;
+  }
+
+  const userDoc = db.collection("wallets").doc(email);
+  userDoc.get().then(doc => {
+    if (doc.exists) {
+      userDoc.update({
+        balance: firebase.firestore.FieldValue.increment(amount),
+        history: firebase.firestore.FieldValue.arrayUnion({
+          type: 'اضافة مدير',
+          amount: amount,
+          date: new Date().toISOString()
+        })
+      }).then(() => {
+        alert("تم إضافة الرصيد للمستخدم!");
+      });
+    } else {
+      userDoc.set({
+        balance: amount,
+        history: [{
+          type: 'اضافة مدير',
+          amount: amount,
+          date: new Date().toISOString()
+        }]
+      }).then(() => {
+        alert("تم إنشاء الحساب واضافة الرصيد!");
+      });
+    }
+  });
+}
+
+function showUserHistory() {
+  const email = auth.currentUser.email;
+  db.collection("wallets").doc(email).get().then(doc => {
+    if (doc.exists) {
+      const history = doc.data().history || [];
+      let output = `سجل العمليات لـ ${email}:\n\n`;
+      history.forEach(record => {
+        output += `${record.date} - ${record.type} - مبلغ: ${record.amount} جنيه\n`;
+        if (record.to) output += `--> إلى: ${record.to}\n`;
+        if (record.from) output += `--> من: ${record.from}\n`;
+      });
+      alert(output);
+    }
+  });
+}
+
+function loadUsers() {
+  const usersList = document.getElementById("users-list");
+  usersList.innerHTML = "";
+  db.collection("wallets").get().then(snapshot => {
+    snapshot.forEach(doc => {
+      const user = doc.id;
+      const button = document.createElement("button");
+      button.innerText = `شوف العمليات لـ ${user}`;
+      button.onclick = () => showUserHistory(user);
+      usersList.appendChild(button);
+    });
+  });
+}
+
+function confirmFakka() {
+  const selectedPackage = parseFloat(document.getElementById("fakka-package").value);
+  const fakkaNumber = document.getElementById("fakka-number").value.trim();
+  const userEmail = auth.currentUser.email;
+
+  if (!selectedPackage || !fakkaNumber) {
+    alert("محتاج تختار الباقة وتكتب رقم الموبايل!");
+    return;
+  }
+
+  const totalCost = selectedPackage + 2.5;
+
+  if (confirm(`هيتم خصم ${totalCost.toFixed(2)} جنيه من رصيدك. تأكيد؟`)) {
+    const userDoc = db.collection("wallets").doc(userEmail);
+    userDoc.get().then(doc => {
+      if (doc.exists && doc.data().balance >= totalCost) {
+        userDoc.update({
+          balance: firebase.firestore.FieldValue.increment(-totalCost),
+          history: firebase.firestore.FieldValue.arrayUnion({
+            type: 'شحن فكة',
+            amount: totalCost,
+            number: fakkaNumber,
+            package: selectedPackage,
+            date: new Date().toISOString()
+          })
+        }).then(() => {
+          const msg = `طلب شحن باقة فكة\nالبريد: ${userEmail}\nالباقة: ${selectedPackage} جنيه\nالرقم: ${fakkaNumber}\nالمبلغ بعد الضريبة: ${totalCost.toFixed(2)} جنيه`;
+          const wa = `https://wa.me/201016553764?text=${encodeURIComponent(msg)}`;
+          window.location.href = wa;
+        });
+      } else {
+        alert("رصيدك مش كافي!");
+      }
+    });
+  }
+}
+function toggleHowToUse() {
+  const section = document.getElementById('how-to-use-section');
+  if (section.style.display === 'none') {
+    section.style.display = 'block';
+  } else {
+    section.style.display = 'none';
+  }
+}</script></body></html>
