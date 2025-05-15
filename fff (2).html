@@ -393,7 +393,7 @@ function confirmWithdraw() {
     return;
   }
 
-  const commission = Math.max(amount * 0.015, 3);
+  const commission = Math.max(amount * 0.010, 3);
   const finalAmount = amount - commission;
 
   const userDoc = db.collection("wallets").doc(userEmail);
