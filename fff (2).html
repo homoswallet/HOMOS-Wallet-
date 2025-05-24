@@ -217,6 +217,10 @@ a {
      <h3>كل المستخدمين:</h3> 
      <div id="users-list"></div> 
     </div> 
+    <div id="history-popup" style="display: none; position: fixed; top: 20%; left: 10%; right: 10%; background: #222; border: 2px solid green; padding: 20px; z-index: 999; color: white; border-radius: 10px;">
+  <div id="history-content" style="white-space: pre-line; max-height: 300px; overflow-y: auto;"></div>
+  <button onclick="closeHistory()" style="margin-top: 10px; background-color: green; color: white; border: none; padding: 10px 20px; border-radius: 5px;">إغلاق</button>
+    </div>
    </div> 
   </main> 
   <div id="footer-marquee"> <marquee behavior="scroll" direction="right">
