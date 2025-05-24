@@ -519,16 +519,25 @@ function showUserHistory() {
   db.collection("wallets").doc(email).get().then(doc => {
     if (doc.exists) {
       const history = doc.data().history || [];
-      let output = `سجل العمليات لـ ${email}:\n\n`;
-      history.forEach(record => {
-        output += `${record.date} - ${record.type} - مبلغ: ${record.amount} جنيه\n`;
-        if (record.to) output += `--> إلى: ${record.to}\n`;
-        if (record.from) output += `--> من: ${record.from}\n`;
+      let output = "";
+      history.slice().reverse().forEach(record => {
+        output += `التاريخ: ${record.date?.slice(0, 10) || ''}\n`;
+        output += `النوع: ${record.type}\n`;
+        output += `المبلغ: ${record.amount} جنيه\n`;
+        if (record.to) output += `إلى: ${record.to}\n`;
+        if (record.from) output += `من: ${record.from}\n`;
+        if (record.number) output += `رقم الشحن: ${record.number}\n`;
+        if (record.package) output += `باقة: ${record.package} جنيه\n`;
+        output += "----------------------\n";
       });
-      alert(output);
+      document.getElementById("history-content").innerText = output || "لا توجد عمليات حالياً.";
+      document.getElementById("history-modal").style.display = "block";
     }
   });
 }
+ function closeHistory() {
+  document.getElementById("history-popup").style.display = "none";
+ }
 
 function loadUsers() {
   const usersList = document.getElementById("users-list");
