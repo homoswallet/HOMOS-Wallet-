@@ -180,7 +180,7 @@ a {
     <h2>أهلاً <span id="user-email"></span></h2> 
     <p>رصيدك الحالي: <span id="balance">0</span> جنيه <button id="toggle-balance" onclick="toggleBalance()">إخفاء</button> </p> 
     <p id="last-operation" style="font-size: 0.9em; color: gray;"></p> <!-- أزرار العمليات --> 
-    <div class="button-grid"> <button onclick="showSection('deposit-section')">💰 إيداع</button> <button onclick="showSection('withdraw-section')">💸 سحب</button> <button onclick="showSection('transfer-section')">🔁 تحويل</button> <button onclick="showSection('support-section')">📞 الدعم</button> <button onclick="showUserHistory()">📋 العمليات</button> <button onclick="showSection('fakka-section')">📱 فكة</button> 
+    <div class="button-grid"> <button onclick="showSection('deposit-section')">💰 إيداع</button> <button onclick="showSection('withdraw-section')">💸 سحب</button> <button onclick="showSection('transfer-section')">🔁 تحويل</button> <button onclick="showSection('support-section')">📞 الدعم</button> <button onclick="openHistory()">📋 العمليات</button> <button onclick="showSection('fakka-section')">📱 فكة</button> 
     </div> <!-- قسم الإيداع --> 
     <div id="deposit-section" class="operation-section" style="display: none;"> 
      <h3>إيداع رصيد</h3> 
@@ -517,7 +517,15 @@ function addBalance() {
     }
   });
 }
+function openHistory() {
+  document.getElementById("history-popup").style.display = "block";
+  // إذا كان هناك سجل حقيقي، استبدل النص الثابت بالمحتوى الفعلي
+  document.getElementById("history-content").innerText = "هنا سجل العمليات...";
+}
 
+function closeHistory() {
+  document.getElementById("history-popup").style.display = "none";
+}
 function showUserHistory() {
   const email = auth.currentUser.email;
   db.collection("wallets").doc(email).get().then(doc => {
